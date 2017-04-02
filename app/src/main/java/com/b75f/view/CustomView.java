@@ -80,41 +80,36 @@ public class CustomView extends View {
 
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void drawCanvas(Canvas c, String [] name, float [] x, float [] y, float [] w, float [] h, int len){
+
         Paint myPaint = new Paint();
         myPaint.setColor(Color.rgb(0, 0, 0));
         myPaint.setStyle(Paint.Style.FILL);
         myPaint.setColor(Color.YELLOW);
         myPaint.setStrokeWidth(2);
 
-        float maxW = 0;
-        float maxH = 0;
-        for(int i = 0; i < len; i++){
-            maxH += w[i];
-            maxW += h[i];
-        }
-
-        float width = getWidth()/maxH;
-        float height = getHeight()/maxW;
-
         Paint p =new Paint();
         Bitmap b= BitmapFactory.decodeResource(getResources(), R.drawable.back);
-
-        b = Bitmap.createScaledBitmap(b, getWidth(), getHeight(), true);
-
-        p.setColor(Color.RED);
+        b = Bitmap.createScaledBitmap(b, 780, 480, true);
+        c.translate(getWidth()/2 - b.getWidth()/2, getHeight()/2 - b.getHeight()/2);
         c.drawBitmap(b, 0, 0, p);
 
         for(int i = 0; i < len; i++) {
+
             myPaint.setColor(Color.rgb(0, 0, 0));
             myPaint.setStyle(Paint.Style.FILL);
             myPaint.setColor(Color.argb(80,255,255,0));
 
             myPaint.setStrokeWidth(2);
-            c.drawRect(x[i]/height, y[i]/width , (x[i] + w[i])/height, (y[i] + h[i])/width , myPaint);
+            c.drawRect(x[i], y[i] , (x[i] + w[i]) ,(y[i] + h[i]) , myPaint);
             myPaint.setColor(Color.BLACK);
             myPaint.setStrokeWidth(1);
-            c.drawText(name[i],x[i]/height, y[i]/width + 10, myPaint);
+            c.drawText(name[i],x[i], y[i] + 10, myPaint);
         }
     }
 }

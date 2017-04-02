@@ -1,10 +1,14 @@
 package com.b75f;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.b75f.view.CustomView;
@@ -25,25 +29,25 @@ import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     private Client mKinveyClient;
     HttpURLConnection c = null;
 
+    TextView txtCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        txtCheck = (TextView)findViewById(R.id.txtCheck);
+
         try {
-            loginUser();
+            if(isNetworkAvailable())
+                loginUser();
+            else
+                txtCheck.setText("Check Your Intenet Connection");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -78,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    else {
-            Toast.makeText(getApplicationContext(), "USing Cached user", Toast.LENGTH_SHORT).show();
-        }
 
         getData();
     }
@@ -144,6 +145,13 @@ public class MainActivity extends AppCompatActivity {
 
                 super.onPostExecute(aVoid);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }
